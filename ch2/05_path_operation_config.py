@@ -3,8 +3,13 @@ Path Operation Configuration
 """
 
 from fastapi import FastAPI, status
+from pydantic import BaseModel
 
 app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    price: float
 
 @app.post(
     "/items/",
@@ -18,5 +23,6 @@ app = FastAPI()
         422: {"description": "Validation Error"},
     },
 )
-async def create_item():
-    return {"id": 1}
+
+async def create_item(item: Item):
+    return {"id": 1, **item.model_dump()}
